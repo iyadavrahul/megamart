@@ -106,7 +106,8 @@ exports.signup = async (req, res) => {
       expireTime: new Date(expireTime),
       gender: gender,
       profileImage: req.files?.length
-        ? `${process.env.BASEURL}/${req.files[0].filename}`
+        ? // eslint-disable-next-line no-undef
+          `${process.env.BASEURL}/${req.files[0].filename}`
         : "",
     });
     // sendSMS(
@@ -159,9 +160,8 @@ exports.login = async (req, res) => {
         { countryCode: countryCode, phoneNumber: phoneNumber },
         { email: email?.toLowerCase() },
       ],
-    })
-      .select(["fullName", "countryCode", "phoneNumber", "email", "password"])
-      .lean();
+    }).select(["fullName", "countryCode", "phoneNumber", "email", "password"]);
+    // .lean();
     if (!user) {
       const msg = email
         ? getText("UNREGISTERED_EMAIL", req.language)
@@ -262,16 +262,14 @@ exports.verifyOTP = async (req, res) => {
         { countryCode: countryCode, phoneNumber: phoneNumber },
         { email: email?.toLowerCase() },
       ],
-    })
-      .select([
-        "fullName",
-        "countryCode",
-        "phoneNumber",
-        "email",
-        "password",
-        "otp",
-      ])
-      .lean();
+    }).select([
+      "fullName",
+      "countryCode",
+      "phoneNumber",
+      "email",
+      "password",
+      "otp",
+    ]);
     if (!user) {
       const msg = email
         ? getText("UNREGISTERED_EMAIL", req.language)
