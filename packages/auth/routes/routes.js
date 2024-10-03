@@ -1,5 +1,6 @@
 const express = require("express");
 const { testAPI } = require("../controller/user/user");
+const { adminSignup } = require("../controller/user/admin");
 
 const router = express.Router();
 
@@ -41,6 +42,7 @@ const router = express.Router();
  *                 type: object
  */
 router.get("/testAPI", testAPI);
+router.post("/admin-signup", adminSignup);
 // router.post("/signup", signup);
 
 module.exports = router;
