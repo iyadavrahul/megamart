@@ -36,6 +36,6 @@
     "prettier": "^3.3.3",
     "sharp": "^0.33.5",
     "swagger-jsdoc": "^6.2.8",
-    "Validator": "^1.1.4"
+    "validator": "^13.11.0"
   }
 }

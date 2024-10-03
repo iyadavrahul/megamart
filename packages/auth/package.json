@@ -15,6 +15,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "common": "workspace:*"
+    "bcrypt": "^5.1.1",
+    "common": "workspace:*",
+    "jsonwebtoken": "^9.0.2"
   }
 }

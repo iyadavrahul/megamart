@@ -15,7 +15,7 @@ app.use(express.static("./public")); //for serving static contenct in public fol
 // eslint-disable-next-line no-undef
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
-app.use("/user", routes);
+app.use("/auth", routes);
 app.use(morgan("tiny"));
 app.use(
   morgan("common", {
@@ -36,7 +36,7 @@ app.use(
     }),
   }),
 );
-app.get("/user", (req, res) => {
+app.get("/auth", (req, res) => {
   console.log("Hello");
   res.status(200).send("Welcome to aswaq user service");
 });
@@ -46,15 +46,15 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "User Service API",
+      title: "Auth Service API",
       version: "1.0.0",
-      description: "API documentation for User Service",
+      description: "API documentation for Auth Service",
     },
   },
   tags: [
     {
-      name: "User",
-      description: "API operations related to Users",
+      name: "Auth",
+      description: "API operations related to Authentication",
     },
   ],
   apis: ["./Routes/*.js"], // Path to the API docs (JSDoc comments)
