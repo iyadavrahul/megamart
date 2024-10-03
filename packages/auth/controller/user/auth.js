@@ -4,10 +4,10 @@ const {
 } = require("../../../../common/apiResponse/apiResponse");
 const { getText } = require("../../../../common/language/lang");
 const { isEmail } = require("validator");
-const User = require("../../models/userSchema");
-const Device = require("../../models/deviceSchema");
 const crypto = require("crypto");
 const moment = require("moment");
+const User = require("common/models/userSchema");
+const Device = require("common/models/deviceSchema");
 // require("dotenv").config();
 
 exports.testAPI = async (req, res) => {
@@ -160,7 +160,14 @@ exports.login = async (req, res) => {
         { countryCode: countryCode, phoneNumber: phoneNumber },
         { email: email?.toLowerCase() },
       ],
-    }).select(["fullName", "countryCode", "phoneNumber", "email", "password"]);
+    }).select([
+      "fullName",
+      "countryCode",
+      "phoneNumber",
+      "email",
+      "password",
+      "isVerified",
+    ]);
     // .lean();
     if (!user) {
       const msg = email
@@ -209,7 +216,7 @@ exports.login = async (req, res) => {
         deviceName: deviceName ?? "",
         OSVersion: OSVersion ?? "",
         buildNumber: buildNumber ?? "",
-        language: language ?? "",
+        language: language ? language : "English",
       });
     }
     // await sendNotificationUser(
@@ -304,7 +311,7 @@ exports.verifyOTP = async (req, res) => {
         deviceName: deviceName ?? "",
         OSVersion: OSVersion ?? "",
         buildNumber: buildNumber ?? "",
-        language: language ?? "",
+        language: language ? language : "English",
       });
     }
     res

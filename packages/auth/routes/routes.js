@@ -4,13 +4,12 @@ const {
   signup,
   login,
   verifyOTP,
+  getUser,
 } = require("../controller/user/auth");
 const { adminSignup } = require("../controller/admin/admin");
 const languageToken = require("common/middlewares/languageToken");
-const {
-  uploadUserImage,
-  createUserImagePath,
-} = require("common/helpers/uploadUserImage");
+const { uploadUserImage } = require("common/helpers/uploadUserImage");
+const tokenUserAuth = require("common/middlewares/tokenUserAuth");
 
 const router = express.Router();
 
@@ -65,7 +64,7 @@ router.patch("/verifyOTP", languageToken, verifyOTP);
 // router.patch("/forgetPassword", languageToken, forgetPassword);
 // router.patch("/updatePassword", languageToken, updatePassword);
 // router.patch("/changePassword", tokenUserAuth, changePassword);
-// router.get("/getUser", tokenUserAuth, getUser);
+router.get("/getUser", tokenUserAuth, getUser);
 // router.put("/editUser", tokenUserAuth, s3upload.any(), editUser);
 // router.patch("/changeLanguage", tokenUserAuth, changeLanguage);
 // router.get("/logout", tokenUserAuth, logout);

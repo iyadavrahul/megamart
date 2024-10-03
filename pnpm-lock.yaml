@@ -65,6 +65,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.658.1
         version: 3.658.1
+      bcrypt:
+        specifier: ^5.1.1
+        version: 5.1.1
       i18n:
         specifier: ^0.15.1
         version: 0.15.1
