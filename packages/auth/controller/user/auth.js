@@ -4,10 +4,10 @@ const {
 } = require("../../../../common/apiResponse/apiResponse");
 const { getText } = require("../../../../common/language/lang");
 const { isEmail } = require("validator");
-const User = require("../../models/userSchema");
-const Device = require("../../models/deviceSchema");
 const crypto = require("crypto");
 const moment = require("moment");
+const User = require("common/models/userSchema");
+const Device = require("common/models/deviceSchema");
 // require("dotenv").config();
 
 exports.testAPI = async (req, res) => {
@@ -106,7 +106,8 @@ exports.signup = async (req, res) => {
       expireTime: new Date(expireTime),
       gender: gender,
       profileImage: req.files?.length
-        ? `${process.env.BASEURL}/${req.files[0].filename}`
+        ? // eslint-disable-next-line no-undef
+          `${process.env.BASEURL}/${req.files[0].filename}`
         : "",
     });
     // sendSMS(
@@ -159,9 +160,15 @@ exports.login = async (req, res) => {
         { countryCode: countryCode, phoneNumber: phoneNumber },
         { email: email?.toLowerCase() },
       ],
-    })
-      .select(["fullName", "countryCode", "phoneNumber", "email", "password"])
-      .lean();
+    }).select([
+      "fullName",
+      "countryCode",
+      "phoneNumber",
+      "email",
+      "password",
+      "isVerified",
+    ]);
+    // .lean();
     if (!user) {
       const msg = email
         ? getText("UNREGISTERED_EMAIL", req.language)
@@ -209,7 +216,7 @@ exports.login = async (req, res) => {
         deviceName: deviceName ?? "",
         OSVersion: OSVersion ?? "",
         buildNumber: buildNumber ?? "",
-        language: language ?? "",
+        language: language ? language : "English",
       });
     }
     // await sendNotificationUser(
@@ -262,16 +269,14 @@ exports.verifyOTP = async (req, res) => {
         { countryCode: countryCode, phoneNumber: phoneNumber },
         { email: email?.toLowerCase() },
       ],
-    })
-      .select([
-        "fullName",
-        "countryCode",
-        "phoneNumber",
-        "email",
-        "password",
-        "otp",
-      ])
-      .lean();
+    }).select([
+      "fullName",
+      "countryCode",
+      "phoneNumber",
+      "email",
+      "password",
+      "otp",
+    ]);
     if (!user) {
       const msg = email
         ? getText("UNREGISTERED_EMAIL", req.language)
@@ -306,7 +311,7 @@ exports.verifyOTP = async (req, res) => {
         deviceName: deviceName ?? "",
         OSVersion: OSVersion ?? "",
         buildNumber: buildNumber ?? "",
-        language: language ?? "",
+        language: language ? language : "English",
       });
     }
     res
