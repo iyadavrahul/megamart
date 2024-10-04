@@ -5,6 +5,8 @@ const app = express();
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const session = require("express-session");
+
 const routes = require("./routes/routes");
 const swaggerJsdoc = require("swagger-jsdoc");
 app.use(express.json({ limit: "50mb" }));
@@ -17,6 +19,51 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 app.use("/auth", routes);
 app.use(morgan("tiny"));
+
+const passport = require("passport");
+const { success } = require("common/apiResponse/apiResponse");
+require("./middlewares/googleLoginAuth");
+
+app.use(
+  session({
+    // eslint-disable-next-line no-undef
+    secret: process.env.SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+//! Google Auth Begins
+app.get("/auth/google-login", (req, res) => {
+  res.send('<h1>Home</h1><a href="/auth/google">Login with Google</a>');
+});
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/auth/googleAuthUser",
+    failureRedirect: "/",
+  }),
+);
+
+app.get("/auth/googleAuthUser", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.status(201).json(success("User", { user: req.user }, res.statusCode));
+  } else {
+    res.redirect("/");
+  }
+});
+//! Google Auth Ends
+
 app.use(
   morgan("common", {
     // eslint-disable-next-line no-undef

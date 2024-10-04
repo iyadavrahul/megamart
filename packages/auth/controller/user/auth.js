@@ -495,6 +495,19 @@ exports.getUser = async (req, res) => {
   }
 };
 
+// exports.googleAuthUser = async (req, res) => {
+//   try {
+//     // let user = {};
+//     // if (req.isAuthenticated()) user = req.user;
+//     res.status(201).json(success("User", { user: req.user }, res.statusCode));
+//   } catch (err) {
+//     console.log(err);
+//     res
+//       .status(400)
+//       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
+//   }
+// };
+
 exports.editProfile = async (req, res) => {
   try {
     const { fullName, phoneNumber, countryCode, email, gender, dateOfBirth } =
