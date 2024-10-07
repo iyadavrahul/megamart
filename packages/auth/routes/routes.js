@@ -5,6 +5,11 @@ const {
   login,
   verifyOTP,
   getUser,
+  forgetPassword,
+  updatePassword,
+  changePassword,
+  editProfile,
+  changeLanguage,
 } = require("../controller/user/auth");
 const { adminSignup, adminLogin, adminForgetPassword, adminVerifyOtp, updatePassword, getAdminData, editProfile } = require("../controller/admin/admin");
 const languageToken = require("common/middlewares/languageToken");
@@ -61,12 +66,12 @@ router.post(
 );
 router.put("/login", languageToken, login);
 router.patch("/verifyOTP", languageToken, verifyOTP);
-// router.patch("/forgetPassword", languageToken, forgetPassword);
-// router.patch("/updatePassword", languageToken, updatePassword);
-// router.patch("/changePassword", tokenUserAuth, changePassword);
+router.patch("/forgetPassword", languageToken, forgetPassword);
+router.patch("/updatePassword", languageToken, updatePassword);
+router.patch("/changePassword", tokenUserAuth, changePassword);
 router.get("/getUser", tokenUserAuth, getUser);
-// router.put("/editUser", tokenUserAuth, s3upload.any(), editUser);
-// router.patch("/changeLanguage", tokenUserAuth, changeLanguage);
+router.put("/editProfile", tokenUserAuth, uploadUserImage.any(), editProfile);
+router.patch("/changeLanguage", tokenUserAuth, changeLanguage);
 // router.get("/logout", tokenUserAuth, logout);
 
 //TODO -> Affiliate apis

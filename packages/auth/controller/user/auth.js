@@ -96,6 +96,18 @@ exports.signup = async (req, res) => {
     }
     const otp = crypto.randomInt(100000, 999999);
     const expireTime = moment(new Date()).add(10, "minute");
+    let profileImage = "",
+      faceId = "";
+    for (const file of req.files) {
+      if (file.fieldname === "profileImage") {
+        // eslint-disable-next-line no-undef
+        profileImage = `${process.env.BASEURL}/${file.filename}`;
+      }
+      if (file.fieldname === "faceId") {
+        // eslint-disable-next-line no-undef
+        faceId = `${process.env.BASEURL}/${file.filename}`;
+      }
+    }
     const user = await User.create({
       fullName: fullName,
       email: email.toLowerCase(),
@@ -105,10 +117,8 @@ exports.signup = async (req, res) => {
       otp: otp,
       expireTime: new Date(expireTime),
       gender: gender,
-      profileImage: req.files?.length
-        ? // eslint-disable-next-line no-undef
-          `${process.env.BASEURL}/${req.files[0].filename}`
-        : "",
+      profileImage: profileImage,
+      faceId: faceId,
     });
     // sendSMS(
     //   countryCode.replace(/[0+]/g, "") + phoneNumber,
@@ -201,6 +211,7 @@ exports.login = async (req, res) => {
     }
     const token = user.generateAuthToken();
     const device = await Device.findOne({ deviceId: deviceId });
+    // console.log(device);
     if (device) {
       await Device.findByIdAndUpdate(device._id, {
         fcmToken: fcmToken ?? "",
@@ -333,32 +344,28 @@ exports.verifyOTP = async (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
   try {
-    const { phoneNumber, countryCode } = req.body;
+    const { phoneNumber, email, countryCode } = req.body;
     console.log(req.body);
-    if (!countryCode) {
+    if (!((phoneNumber && countryCode) || email)) {
       return res
         .status(200)
         .json(
-          error(getText("PROVIDE_COUNTRYCODE", req.language), res.statusCode),
+          error(getText("PROVIDE_EMAIL_PHONE", req.language), res.statusCode),
         );
-    }
-    if (!phoneNumber) {
-      return res
-        .status(200)
-        .json(error(getText("PROVIDE_PHONE", req.language), res.statusCode));
     }
     const user = await User.findOne({
-      countryCode: countryCode,
-      phoneNumber: phoneNumber,
+      $or: [
+        { countryCode: countryCode, phoneNumber: phoneNumber },
+        { email: email?.toLowerCase() },
+      ],
     });
     if (!user) {
-      return res
-        .status(200)
-        .json(
-          error(getText("UNREGISTERED_PHONE", req.language), res.statusCode),
-        );
+      const msg = email
+        ? getText("UNREGISTERED_EMAIL", req.language)
+        : getText("UNREGISTERED_PHONE", req.language);
+      return res.status(200).json(error(msg, res.statusCode));
     }
-    const otp = crypto.randomInt(1000, 9999);
+    const otp = crypto.randomInt(100000, 999999);
     user.otp = otp;
     await user.save();
     res
@@ -376,36 +383,41 @@ exports.forgetPassword = async (req, res) => {
 
 exports.updatePassword = async (req, res) => {
   try {
-    const { phoneNumber, countryCode, password } = req.body;
+    const { phoneNumber, countryCode, password, email } = req.body;
     console.log(req.body);
+    if (!((phoneNumber && countryCode) || email)) {
+      return res
+        .status(200)
+        .json(
+          error(getText("PROVIDE_EMAIL_PHONE", req.language), res.statusCode),
+        );
+    }
+    const user = await User.findOne({
+      $or: [
+        { countryCode: countryCode, phoneNumber: phoneNumber },
+        { email: email?.toLowerCase() },
+      ],
+    });
+    if (!user) {
+      const msg = email
+        ? getText("UNREGISTERED_EMAIL", req.language)
+        : getText("UNREGISTERED_PHONE", req.language);
+      return res.status(200).json(error(msg, res.statusCode));
+    }
     if (!password) {
       return res
         .status(200)
         .json(error(getText("PROVIDE_NEW_PASS", req.language), res.statusCode));
     }
-    if (!countryCode) {
+    if (await user.checkUserPassword(password, user.password)) {
       return res
         .status(200)
         .json(
-          error(getText("PROVIDE_COUNTRYCODE", req.language), res.statusCode),
+          error(getText("OLD_NEW_SAME_PASSWORD", req.language), res.statusCode),
         );
     }
-    if (!phoneNumber) {
-      return res
-        .status(200)
-        .json(error(getText("PROVIDE_PHONE", req.language), res.statusCode));
-    }
-    const user = await User.findOne({
-      countryCode: countryCode,
-      phoneNumber: phoneNumber,
-    });
-    if (!user) {
-      return res
-        .status(200)
-        .json(
-          error(getText("UNREGISTERED_PHONE", req.language), res.statusCode),
-        );
-    }
+    user.password = password;
+    await user.save();
     user.password = password;
     await user.save();
     res
@@ -437,9 +449,18 @@ exports.changePassword = async (req, res) => {
     }
     const user = await User.findById(req.user._id).select("password");
     if (!(await user.checkUserPassword(oldPassword, user.password))) {
-      res
+      return res
         .status(200)
-        .json(error(getText("INVALID_PASSWORD", req.language), res.statusCode));
+        .json(
+          error(getText("INVALID_OLD_PASSWORD", req.language), res.statusCode),
+        );
+    }
+    if (await user.checkUserPassword(password, user.password)) {
+      return res
+        .status(200)
+        .json(
+          error(getText("OLD_NEW_SAME_PASSWORD", req.language), res.statusCode),
+        );
     }
     user.password = password;
     await user.save();
@@ -474,19 +495,13 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.editUser = async (req, res) => {
+exports.editProfile = async (req, res) => {
   try {
-    const { firstName_en, lastName_en, firstName_ar, lastName_ar, email } =
+    const { fullName, phoneNumber, countryCode, email, gender, dateOfBirth } =
       req.body;
     console.log(req.body);
-    const user = await User.findById(req.user._id).select([
-      "firstName_en",
-      "lastName_en",
-      "firstName_ar",
-      "lastName_ar",
-      "email",
-      "image",
-    ]);
+    console.log(req.files);
+    const user = await User.findById(req.user._id);
     if (email) {
       if (user.email !== email) {
         const checkEmail = await User.findOne({ email: email.toLowerCase() });
@@ -504,11 +519,41 @@ exports.editUser = async (req, res) => {
         user.email = email;
       }
     }
-    if (firstName_en) user.firstName_en = firstName_en;
-    if (lastName_en) user.lastName_en = lastName_en;
-    if (firstName_ar) user.firstName_ar = firstName_ar;
-    if (lastName_ar) user.lastName_ar = lastName_ar;
-    if (req.files?.length) user.image = req.files[0].location;
+    if (fullName) user.fullName = fullName;
+    if (phoneNumber) {
+      if (!countryCode) {
+        return res
+          .status(200)
+          .json(error(getText("COUNTRY_CODE", req.language), res.statusCode));
+      }
+      if (user.phoneNumber !== phoneNumber) {
+        const checkPhone = await User.findOne({
+          countryCode: countryCode,
+          phoneNumber: phoneNumber,
+        });
+        if (checkPhone) {
+          return res
+            .status(200)
+            .json(
+              error(getText("DUPLICATE_PHONE", req.language), res.statusCode),
+            );
+        }
+      }
+      user.phoneNumber = phoneNumber;
+    }
+    if (email) user.email = email;
+    if (gender) user.gender = gender;
+    if (dateOfBirth) user.dateOfBirth = dateOfBirth;
+    for (const file of req.files) {
+      if (file.fieldname === "profileImage") {
+        // eslint-disable-next-line no-undef
+        user.profileImage = `${process.env.BASEURL}/${file.filename}`;
+      }
+      if (file.fieldname === "faceId") {
+        // eslint-disable-next-line no-undef
+        user.faceId = `${process.env.BASEURL}/${file.filename}`;
+      }
+    }
     await user.save();
     res
       .status(201)
@@ -565,7 +610,7 @@ exports.changeLanguage = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    const token = req.header("x-auth-token-listener");
+    const token = req.header("x-auth-token-user");
     await Device.findOneAndDelete({ user: req.user._id, authToken: token });
     res
       .status(201)
