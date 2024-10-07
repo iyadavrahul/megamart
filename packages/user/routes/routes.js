@@ -1,6 +1,8 @@
 const express = require("express");
 const { testAPI } = require("../controller/user/user");
-
+const { getUser } = require("../../auth/controller/user/auth");
+const tokenAdminAuth=require("common/middlewares/tokenAdminAuth");
+const { getUserDetails, userDelete, userStatus } = require("../controller/admin/user");
 const router = express.Router();
 
 /**
@@ -43,4 +45,10 @@ const router = express.Router();
 router.get("/testAPI", testAPI);
 // router.post("/signup", signup);
 
+
+//TODO -> Admin APIs
+router.patch("/getUsers",tokenAdminAuth,getUser)
+router.get("/userDetails/:id",tokenAdminAuth,getUserDetails)
+router.delete("/userDelete/:id",tokenAdminAuth,userDelete)
+router.post("/userStatus/:id",userStatus)
 module.exports = router;

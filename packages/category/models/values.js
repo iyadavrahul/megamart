@@ -15,13 +15,13 @@ const values = new mongoose.Schema({
   },
   attribute: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "attributes",
+    ref: "Attributes",
     required: true,
   },
 },
 { timestamps: true },
-{ collection: "value" }
+{ collection: "Value" }
 );
-const Values = mongoose.model("value", values);
+const Values = mongoose.model("Value", values);
 
 module.exports = Values;

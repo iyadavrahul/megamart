@@ -4,12 +4,12 @@ const schema = new mongoose.Schema(
   {
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "category",
+      ref: "Category",
       required: true,
     },
     subCategory: {
         type: mongoose.Types.ObjectId,
-        ref: "subCategory",
+        ref: "SubCategory",
         required: true,
       },
     name_ar: {
@@ -39,9 +39,9 @@ const schema = new mongoose.Schema(
     
   },
   { timestamps: true },
-  { collection: "subSubCategory" }
+  { collection: "SubSubCategory" }
 );
 
-const SubSubCategory = mongoose.model("subSubCategory", schema);
+const SubSubCategory = mongoose.model("SubSubCategory", schema);
 
 module.exports = SubSubCategory;

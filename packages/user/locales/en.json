@@ -1,4 +1,5 @@
 {
 	"SESSION": "Session Expired",
-	"TEST_API":"This is test api"
+	"TEST_API": "This is test api",
+	"CATCH_ERROR": "CATCH_ERROR"
 }
