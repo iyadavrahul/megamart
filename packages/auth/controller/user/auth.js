@@ -131,6 +131,13 @@ exports.signup = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/signup",
+    });
     res
       .status(500)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -246,6 +253,12 @@ exports.login = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/login",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -336,6 +349,12 @@ exports.verifyOTP = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/verifyOTP",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -375,6 +394,12 @@ exports.forgetPassword = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/forgetPassword",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -427,6 +452,12 @@ exports.updateUserPassword = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/updateUserPassword",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -475,6 +506,12 @@ exports.changePassword = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/changePassword",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -489,6 +526,12 @@ exports.getUser = async (req, res) => {
     res.status(201).json(success("User", { user }, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/getUser",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -579,6 +622,12 @@ exports.editUserProfile = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/editUserProfile",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -615,6 +664,12 @@ exports.changeLanguage = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/changeLanguage",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));
@@ -630,6 +685,12 @@ exports.logout = async (req, res) => {
       .json(success(getText("LOGGED_OUT", req.language), {}, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/logout",
+    });
     res
       .status(400)
       .json(error(getText("CATCH_ERROR", req.language), res.statusCode));

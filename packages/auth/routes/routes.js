@@ -29,10 +29,10 @@ const router = express.Router();
 //TODO -> User APIs
 /**
  * @swagger
- * /user/testAPI:
+ * /auth/testAPI:
  *   patch:
  *     summary: this is test api
- *     tags: [Users]
+ *     tags: [Auth]
  *     requestBody:
  *       required: false
  *     responses:
@@ -65,13 +65,108 @@ const router = express.Router();
  *                 type: object
  */
 router.get("/testAPI", testAPI);
-router.post(
-  "/signup",
-  // createUserImagePath,
-  languageToken,
-  uploadUserImage.any(),
-  signup,
-);
+
+/**
+ *@swagger
+ *paths:
+ *  /auth/signup:
+ *    post:
+ *      summary: User Signup
+ *      tags: [Auth]
+ *      description: Allows a new user to sign up with their details, including an optional profile image.
+ *      parameters:
+ *       - in: header
+ *         name: x-auth-token-user
+ *         required: true
+ *         description: The authentication token for the user
+ *         schema:
+ *           type: string
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          multipart/form-data:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                fullName:
+ *                  type: string
+ *                  example: Rahul
+ *                dateOfBirth:
+ *                  type: string
+ *                  format: date
+ *                  example: 2024-12-12
+ *                email:
+ *                  type: string
+ *                  format: email
+ *                  example: rahulyadav@techgropse.com
+ *                countryCode:
+ *                  type: string
+ *                  example: "91"
+ *                phoneNumber:
+ *                  type: string
+ *                  example: "9876119876"
+ *                gender:
+ *                  type: string
+ *                  enum: [Male, Female, Other]
+ *                  example: Male
+ *                password:
+ *                  type: string
+ *                  format: password
+ *                  example: "12345678"
+ *                image:
+ *                  type: string
+ *                  format: binary
+ *      responses:
+ *        '201':
+ *          description: User successfully signed up
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: boolean
+ *                    example: false
+ *                  message:
+ *                    type: string
+ *                  results:
+ *                    type: object
+ *        '400':
+ *          description: Bad request
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  error:
+ *                    type: string
+ *                    example: Invalid input
+ *        '500':
+ *          description: Logo
+ *          content:
+ *            application/json:
+ *             schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: boolean
+ *                message:
+ *                  type: string
+ *                results:
+ *                  type: object
+ *
+ *      security:
+ *        - x-auth-token-user: []
+ *
+ *      components:
+ *        securitySchemes:
+ *          x-auth-token-user:
+ *            type: apiKey
+ *            in: header
+ *            name: x-auth-token-user
+ *
+ */
+router.post("/signup", languageToken, uploadUserImage.any(), signup);
 router.put("/login", languageToken, login);
 router.patch("/verifyOTP", languageToken, verifyOTP);
 router.patch("/forgetPassword", languageToken, forgetPassword);

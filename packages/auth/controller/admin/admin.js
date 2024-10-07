@@ -7,6 +7,7 @@ const validator = require("Validator");
 const Admin = require("common/models/admin");
 const moment = require("moment");
 const sendMail = require("../../services/emailServices");
+const Error = require("common/models/errorSchema");
 
 exports.adminSignup = async (req, res) => {
   try {
@@ -42,6 +43,13 @@ exports.adminSignup = async (req, res) => {
       .json(success("Signup Successful", { admin }, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/adminSignup",
+    });
     res.status(400).json(error("Error in signup", res.statusCode));
   }
 };
