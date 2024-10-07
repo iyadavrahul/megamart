@@ -381,7 +381,7 @@ exports.forgetPassword = async (req, res) => {
   }
 };
 
-exports.updatePassword = async (req, res) => {
+exports.updateUserPassword = async (req, res) => {
   try {
     const { phoneNumber, countryCode, password, email } = req.body;
     console.log(req.body);
@@ -508,7 +508,7 @@ exports.getUser = async (req, res) => {
 //   }
 // };
 
-exports.editProfile = async (req, res) => {
+exports.editUserProfile = async (req, res) => {
   try {
     const { fullName, phoneNumber, countryCode, email, gender, dateOfBirth } =
       req.body;
