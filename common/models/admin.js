@@ -38,7 +38,7 @@ const adminSchema = new mongoose.Schema(
     },
   },
   { timestamps: true },
-  { collection: "admin" }
+  { collection: "Admin" },
 );
 
 adminSchema.methods.correctPassword = async (dbPass, frontendPass) => {
@@ -46,7 +46,8 @@ adminSchema.methods.correctPassword = async (dbPass, frontendPass) => {
 };
 
 adminSchema.methods.generateAdminAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, "ultra-security", {
+  // eslint-disable-next-line no-undef
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "90d",
   });
   return token;
@@ -59,6 +60,6 @@ adminSchema.pre("save", async function (next) {
   next();
 });
 
-const admin = mongoose.model("admin", adminSchema);
+const Admin = mongoose.model("Admin", adminSchema);
 
-module.exports = admin;
+module.exports = Admin;

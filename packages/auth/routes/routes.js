@@ -121,6 +121,6 @@ router.put("/admin-login", adminLogin);
 router.put("/admin-forgetPassword", adminForgetPassword);
 router.put("/admin-verifyOTP", adminVerifyOtp);
 router.put("/admin-updatePassword", updatePassword);
-router.put("/getAdmin", tokenAdminAuth, getAdminData);
+router.get("/getAdmin", tokenAdminAuth, getAdminData);
 router.put("/editAdmin", tokenAdminAuth, editProfile);
 module.exports = router;

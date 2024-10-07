@@ -36,7 +36,7 @@ exports.adminSignup = async (req, res) => {
       password: password,
       name: name,
     });
-    await admin.save();
+    // await admin.save();
     res
       .status(201)
       .json(success("Signup Successful", { admin }, res.statusCode));
@@ -54,7 +54,9 @@ exports.adminLogin = async (req, res) => {
         .status(201)
         .json(error("Please provide password", res.statusCode));
     }
-    const verify = await Admin.findOne({ $or: [{ name }, { email: name }] });
+    const verify = await Admin.findOne({
+      $or: [{ name }, { email: name?.toLowerCase() }],
+    });
     if (!verify) {
       return res
         .status(201)
