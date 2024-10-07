@@ -15,24 +15,24 @@ const attribute = new mongoose.Schema({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "category",
+    ref: "Category",
     require: true,
   },
   subCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "subCategory",
+    ref: "SubCategory",
     require: true,
   },
   subSubCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "subSubCategory",
+    ref: "SubSubCategory",
     require: true,
   },
 },
 { timestamps: true },
-{ collection: "attributes" }
+{ collection: "Attributes" }
 
 );
-const Attribute = mongoose.model("attributes", attribute);
+const Attribute = mongoose.model("Attributes", attribute);
 
 module.exports = Attribute;

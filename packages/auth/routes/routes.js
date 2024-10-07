@@ -6,11 +6,11 @@ const {
   verifyOTP,
   getUser,
 } = require("../controller/user/auth");
-const { adminSignup } = require("../controller/admin/admin");
+const { adminSignup, adminLogin, adminForgetPassword, adminVerifyOtp, updatePassword, getAdminData, editProfile } = require("../controller/admin/admin");
 const languageToken = require("common/middlewares/languageToken");
 const { uploadUserImage } = require("common/helpers/uploadUserImage");
 const tokenUserAuth = require("common/middlewares/tokenUserAuth");
-
+const tokenAdminAuth=require("common/middlewares/tokenAdminAuth")
 const router = express.Router();
 
 //TODO -> User APIs
@@ -74,6 +74,10 @@ router.get("/testAPI", testAPI);
 
 //TODO -> Admin APIs
 router.post("/admin-signup", adminSignup);
-// router.post("/signup", signup);
-
+ router.put("/admin-login", adminLogin);
+router.put("/admin-forgetPassword",adminForgetPassword)
+router.put("/admin-verifyOTP",adminVerifyOtp)
+router.put("/admin-updatePassword",updatePassword)
+router.put("/getAdmin",tokenAdminAuth,getAdminData)
+router.put("/editAdmin",tokenAdminAuth,editProfile)
 module.exports = router;
