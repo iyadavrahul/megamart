@@ -8,7 +8,7 @@ const itemSchema = new mongoose.Schema(
     },
     name_ar: {
       type: String,
-      required: true,
+      default: "",
     },
     description_en: {
       type: String,
@@ -16,35 +16,67 @@ const itemSchema = new mongoose.Schema(
     },
     description_ar: {
       type: String,
-      required: false,
+      default: "",
     },
     category: {
       type: mongoose.Types.ObjectId,
-      ref: "category",
+      ref: "Category",
       required: true,
     },
     subCategory: {
       type: mongoose.Types.ObjectId,
-      ref: "subCategory",
+      ref: "SubCategory",
       required: false,
     },
     subSubCategory: {
-        type: mongoose.Types.ObjectId,
-        ref: "subSubCategory",
-        required: false,
-      },
-   
+      type: mongoose.Types.ObjectId,
+      ref: "SubSubCategory",
+      required: false,
+    },
+    imagesApp: {
+      type: Array,
+      required: false,
+      default: [],
+    },
+    imagesWeb: {
+      type: Array,
+      required: false,
+      default: [],
+    },
     status: {
       type: Boolean,
       required: false,
       default: false,
     },
-   
+    price: {
+      type: Number,
+      default: 0,
+    },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    origin: {
+      type: String,
+      default: "",
+    },
+    hasVarients: {
+      type: Boolean,
+      default: false,
+    },
+    isLive: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
-  { collection: "item" }
+  { collection: "Product" },
 );
 
-const Item = mongoose.model("item", itemSchema);
+const Product = mongoose.model("Product", itemSchema);
 
-module.exports = Item;
+module.exports = Product;

@@ -1,4 +1,5 @@
 {
-	"SESSION": "Session Expired",
-	"TEST_API":"This is test api"
+  "SESSION": "Session Expired",
+  "PROVIDE_VARIENTS": "Please provide varients",
+  "CATCH_ERROR": "Internal Server Error"
 }

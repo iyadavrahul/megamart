@@ -1,6 +1,6 @@
 const { success, error } = require("common/apiResponse/apiResponse");
+const Error = require("common/models/errorSchema");
 const User = require("common/models/userSchema");
-const Admin = require("common/models/admin");
 const { default: mongoose } = require("mongoose");
 
 exports.getUserList = async (req, res) => {
@@ -31,6 +31,12 @@ exports.getUserList = async (req, res) => {
     res.status(200).json(success("User list ", { users }, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "user/getUserList",
+    });
     res.status(500).json(error("Internal Server Error", res.statusCode));
   }
 };
