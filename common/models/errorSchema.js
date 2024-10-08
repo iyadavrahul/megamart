@@ -8,7 +8,7 @@ const schema = new Schema(
     },
     admin: {
       type: Types.ObjectId,
-      ref: "User",
+      ref: "Admin",
       required: false,
     },
     affiliate: {

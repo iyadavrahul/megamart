@@ -83,6 +83,13 @@ exports.adminLogin = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/admin-login",
+    });
     res.status(400).json(error("Error In Admin Login", res.statusCode));
   }
 };
@@ -122,6 +129,13 @@ exports.adminForgetPassword = async (req, res) => {
     res.status(201).json(success("OTP Sent", { otp, admin }, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/admin-forgetPassword",
+    });
     res.status(400).json(error("forget password error", res.statusCode));
   }
 };
@@ -156,6 +170,13 @@ exports.adminVerifyOtp = async (req, res) => {
     res.status(201).json(success("OTP Verified", {}, res.statusCode));
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/admin-verifyOTP",
+    });
     res.status(400).json(error("Verify otp error", res.statusCode));
   }
 };
@@ -205,6 +226,13 @@ exports.updatePassword = async (req, res) => {
       );
   } catch (err) {
     console.log(err);
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/admin-updatePassword",
+    });
     res.status(400).json(error("Update password error", res.statusCode));
   }
 };
@@ -218,6 +246,13 @@ exports.getAdminData = async (req, res) => {
     }
     res.status(200).json(success("Success", { admin }, res.statusCode));
   } catch (err) {
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/getAdmin",
+    });
     res.status(400).json(error("Error In admin Details", res.statusCode));
   }
 };
@@ -235,6 +270,13 @@ exports.editProfile = async (req, res) => {
       .status(200)
       .json(success("Profile Update Successful", { admin }, res.statusCode));
   } catch (err) {
+    await Error.create({
+      // admin:admin,
+      arrError: err,
+      strError: err,
+      objError: err,
+      route: "auth/editAdmin",
+    });
     res.status(400).json(error("Error ", res.statusCode));
   }
 };
