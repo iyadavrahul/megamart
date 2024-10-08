@@ -1,8 +1,12 @@
 const express = require("express");
 const { testAPI } = require("../controller/user/user");
-const { getUser } = require("../../auth/controller/user/auth");
-const tokenAdminAuth=require("common/middlewares/tokenAdminAuth");
-const { getUserDetails, userDelete, userStatus } = require("../controller/admin/user");
+const tokenAdminAuth = require("common/middlewares/tokenAdminAuth");
+const {
+  getUserDetails,
+  userDelete,
+  userStatus,
+  getUserList,
+} = require("../controller/admin/user");
 const router = express.Router();
 
 /**
@@ -45,9 +49,8 @@ const router = express.Router();
 router.get("/testAPI", testAPI);
 // router.post("/signup", signup);
 
-
 //TODO -> Admin APIs
-router.patch("/getUsers",getUser)
+router.patch("/getUsers", getUserList);
 /*
  * @swagger
  * /api/user/getUsers:
@@ -127,8 +130,7 @@ router.patch("/getUsers",getUser)
  *                   example: 400
  */
 
-
-router.get("/userDetails/:id",tokenAdminAuth,getUserDetails)
-router.delete("/userDelete/:id",tokenAdminAuth,userDelete)
-router.post("/userStatus/:id",userStatus)
+router.get("/userDetails/:id", tokenAdminAuth, getUserDetails);
+router.delete("/userDelete/:id", tokenAdminAuth, userDelete);
+router.post("/userStatus/:id", userStatus);
 module.exports = router;

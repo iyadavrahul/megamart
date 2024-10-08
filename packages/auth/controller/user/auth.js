@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const moment = require("moment");
 const User = require("common/models/userSchema");
 const Device = require("common/models/deviceSchema");
+const Error = require("common/models/errorSchema");
 // require("dotenv").config();
 
 exports.testAPI = async (req, res) => {
