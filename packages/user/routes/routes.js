@@ -50,7 +50,7 @@ router.get("/testAPI", testAPI);
 // router.post("/signup", signup);
 
 //TODO -> Admin APIs
-router.patch("/getUsers", getUserList);
+router.patch("/getUsers", tokenAdminAuth, getUserList);
 /*
  * @swagger
  * /api/user/getUsers:

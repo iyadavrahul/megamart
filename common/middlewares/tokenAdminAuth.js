@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { error } = require("../apiResponse/apiResponse");
 const { getText } = require("../language/lang");
-const Admin=require("../models/admin")
+const Admin = require("../models/admin");
 async function tokenAdminAuth(req, res, next) {
   const token = req.header("x-auth-token-admin");
   if (!token)
@@ -13,8 +13,7 @@ async function tokenAdminAuth(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.admin = decoded;
     const admin = await Admin.findById(req.admin._id).lean();
-    console.log(admin);
-    
+    // console.log(req.admin);
     if (!admin) {
       return res
         .status(401)
