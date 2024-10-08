@@ -69,6 +69,135 @@ exports.addCategory = async (req, res) => {
   };
 
 
+  exports.getCategories = async (req, res) => {
+    try {
+      const { search, } = req.body;
+      const query = {
+        $or: [
+          { name_en: { $regex: search, $options: "i" } },
+          { description_en: { $regex: search, $options: "i" } },
+        ],
+      };
+      
+      const categories = await Category.aggregate([
+        {
+          $match: query,
+        },
+       {
+        $sort:{
+          createdAt:-1
+        }
+       }
+      ]);
+      res.status(200).json(success("Categories", { categories }, res.statusCode));
+    } catch (err) {
+      console.log(err);
+      await Error.create({
+        // admin:admin,
+        arrError: err,
+        strError: err,
+        objError: err,
+        route: "category/getCategories",
+      });
+      res.status(400).json(error("error", res.statusCode));
+    }
+  };
+  exports.editCategory = async (req, res) => {
+    try {
+      const { name_en, name_ar, description_en, description_ar } = req.body;
+      const category = await Category.findById(req.params.id);
+      if (name_en) {
+        category.name_en = name_en;
+      }
+      if (name_ar) {
+        category.name_ar = name_ar;
+      }
+      if (description_en) {
+        category.description_en = description_en;
+      }
+      if (description_ar) {
+        category.description_ar = description_ar;
+      }
+      if (req.files.length) {
+        category.image = `${process.env.BASEURL}/${req.files[0].filename}`;
+      }
+      await category.save();
+      res
+        .status(200)
+        .json(success("Category Edited", { category }, res.statusCode));
+    } catch (err) {
+      console.log(err);
+      await Error.create({
+        // admin:admin,
+        arrError: err,
+        strError: err,
+        objError: err,
+        route: "category/editCategories/:id",
+      });
+      res.status(400).json(error("Error editCategory", res.statusCode));
+    }
+  };
+  exports.viewCategory = async (req, res) => {
+    try {
+      const category = await Category.findById(req.params.id)
+      console.log(category);
+      res.status(200).json(success("Category", { category }, res.statusCode));
+    } catch (err) {
+      console.log(err);
+      await Error.create({
+        // admin:admin,
+        arrError: err,
+        strError: err,
+        objError: err,
+        route: "category/viewCategories/:id",
+      });
+      res.status(400).json(error("error viewCategory", res.statusCode));
+    }
+  };
+
+
+
+
+  exports.deleteCategory = async (req, res) => {
+    try {
+      await Category.findByIdAndDelete(req.params.id);
+      res.status(200).json(success("Category Deleted", {}, res.statusCode));
+    } catch (err) {
+      console.log(err);
+      await Error.create({
+        // admin:admin,
+        arrError: err,
+        strError: err,
+        objError: err,
+        route: "category/deleteCategories/:id",
+      });
+      res.status(400).json(error("error ", res.statusCode));
+    }
+  };
+  
+  exports.changeCategoryStatus = async (req, res) => {
+    try {
+      const category = await Category.findById(req.params.id).select("status")
+      category.status = !category.status;
+      await category.save();
+      const msg = category.status ? "Category Enabled" : "Category Disabled";
+      res.status(201).json(success(msg, { category }, res.statusCode));
+    } catch (err) {
+      console.log(err);
+      await Error.create({
+        // admin:admin,
+        arrError: err,
+        strError: err,
+        objError: err,
+        route: "category/categoryStatus/:id",
+      });
+      res.status(400).json(error("error SUbCategory", res.statusCode));
+    }
+  };
+  
+
+
+
   exports.addSubCategory = async (req, res) => {
     try {
       const { name_en, name_ar, description_en, description_ar, category } =
