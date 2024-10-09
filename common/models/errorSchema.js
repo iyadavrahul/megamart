@@ -13,7 +13,7 @@ const schema = new Schema(
     },
     affiliate: {
       type: Types.ObjectId,
-      ref: "User",
+      ref: "Affiliate",
       required: false,
     },
     arrError: {
@@ -27,7 +27,7 @@ const schema = new Schema(
       default: "",
     },
     objError: {
-      type: String,
+      type: Object,
       required: false,
       default: {},
     },
